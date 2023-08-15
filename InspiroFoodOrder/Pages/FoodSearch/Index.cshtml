@@ -1,0 +1,15 @@
+﻿@page
+@model FoodSearch.IndexModel
+
+@{
+    ViewData["Title"] = "Food Search";
+}
+
+<h2>Food Search</h2>
+
+<form method="get" asp-page="/Food/Index">
+    <label for="searchQuery">Search:</label>
+    <input type="text" id="searchQuery" name="searchQuery" />
+    <button type="submit">Search</button>
+</form>
+

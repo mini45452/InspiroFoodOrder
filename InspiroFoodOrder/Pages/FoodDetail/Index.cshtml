@@ -1,0 +1,50 @@
+﻿@page "{foodId:int}"
+@model FoodDetailModel
+
+@{
+    ViewData["Title"] = "Food Detail";
+}
+
+<h2>Food Detail</h2>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th>Food Name</th>
+            <td>@Model.Food.Name</td>
+        </tr>
+        <tr>
+            <th>Stock</th>
+            <td>@Model.Food.Stock</td>
+        </tr>
+        <tr>
+            <th>Price</th>
+            <td>@Model.Food.Price</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Order Food</h3>
+
+<form method="post">
+    <input type="hidden" asp-for="Food.Id" />
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" name="quantity" min="1" required />
+    <button type="submit">Place Order</button>
+</form>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        var quantityInput = document.getElementById('quantity');
+        var quantityValue = parseInt(quantityInput.value);
+        var stock = @Model.Food.Stock;
+
+        if (quantityValue <= 0) {
+            event.preventDefault();
+            alert('Quantity must be greater than 0.');
+        } else if (quantityValue > stock) {
+            event.preventDefault();
+            alert('Not enough stock available.');
+        }
+    });
+</script>

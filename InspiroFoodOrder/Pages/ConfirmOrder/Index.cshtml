@@ -1,0 +1,46 @@
+﻿@page
+@model ConfirmOrderModel
+
+<h2>Confirm Order</h2>
+
+@if (Model.CartItems.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Food ID</th>
+                <th>Food Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var total = 0;
+            }
+            @foreach (var cartItem in Model.CartItems)
+            {
+                var food = Model._context.Foods.Find(cartItem.Key);
+                var subtotal = food.Price * cartItem.Value;
+                <tr>
+                    <td>@food.Id</td>
+                    <td>@food.Name</td>
+                    <td>@food.Price</td>
+                    <td>@cartItem.Value</td>
+                    <td>@subtotal</td>
+                </tr>
+                total += subtotal;
+            }
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>Total:</strong></td>
+                <td>@total</td>
+            </tr>
+        </tbody>
+    </table>
+    <a asp-page="/Checkout/Index" class="btn btn-primary">Confirm Order</a>
+}
+else
+{
+    <p>Your cart is empty.</p>
+}

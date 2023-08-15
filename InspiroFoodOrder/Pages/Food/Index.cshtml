@@ -1,0 +1,89 @@
+﻿@page
+@model InspiroFoodOrder.Pages.Food.IndexModel
+
+@{
+    ViewData["Title"] = "Food List";
+}
+
+<h2>Food List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Food Name</th>
+            <th>Stock</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var food in Model.Foods.Items)
+        {
+            <tr>
+                <td><a asp-page="/FoodDetail/Index" asp-route-foodId="@food.Id" asp-route-searchQuery="@ViewData["searchQuery"]">@food.Name</a></td>
+                <td>@food.Stock</td>
+                <td>@food.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="pager">
+    <span>Page @Model.Foods.PageIndex of @Model.Foods.TotalPages</span>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item @(Model.Foods.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" asp-page="Index" asp-route-pageIndex="@(Model.Foods.PageIndex - 1)" asp-route-searchQuery="@ViewData["searchQuery"]">Previous</a>
+            </li>
+            <li class="page-item @(Model.Foods.HasNextPage ? "" : "disabled")">
+                <a class="page-link" asp-page="Index" asp-route-pageIndex="@(Model.Foods.PageIndex + 1)" asp-route-searchQuery="@ViewData["searchQuery"]">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<<h3>Cart Items:</h3>
+@if (Model.CartItems.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Food Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var total = 0;
+            }
+            @foreach (var cartItem in Model.CartItems)
+            {
+                var foodId = cartItem.Key;
+                var quantity = cartItem.Value;
+                var food = Model.FoodDbContext.Foods.FirstOrDefault(f => f.Id == foodId);
+                var foodName = food.Name;
+                var subtotal = food.Price * quantity;
+                total += subtotal;
+
+                <tr>
+                    <td>@foodName</td>
+                    <td>@food.Price</td>
+                    <td>@quantity</td>
+                    <td>@subtotal</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
+                <td>@total</td>
+            </tr>
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Your cart is empty.</p>
+}
+
+
+<a asp-page="/ConfirmOrder/Index" class="btn btn-primary">Buy All</a>
